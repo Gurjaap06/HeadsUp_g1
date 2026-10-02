@@ -15,7 +15,7 @@
     />
     <meta
       name="description"
-      content="A fast and fun charades game you can play anywhere."
+      content="A fast and fun Punjabi charades game you can play anywhere."
     />
     <title>Punjabi Charades</title>
     <link rel="manifest" href="manifest.json" />
@@ -24,20 +24,111 @@
 
   <body>
     <main id="app">
-      <!-- START SCREEN -->
+      <!-- HOME / START SCREEN -->
       <section id="start-screen" class="screen start-screen">
-        <div class="start-content">
-          <p class="eyebrow">PUNJABI CHARADES</p>
-          <h1>CHARADES</h1>
-          <p class="tagline">
-            Put the phone on your forehead.<br />Let the guessing begin.
-          </p>
+        <div class="home-shell">
+          <header class="home-hero">
+            <p class="eyebrow">PUNJABI CHARADES</p>
+            <h1>CHARADES</h1>
+            <p class="tagline">
+              Pick a deck, choose your round, and put the phone on your forehead.
+            </p>
+          </header>
 
-          <button id="start-btn" class="primary-button" type="button">
-            PLAY
-          </button>
+          <div class="home-panel">
+            <section id="deck-section" class="setup-section">
+              <div class="section-heading">
+                <div>
+                  <span class="step-label">01</span>
+                  <h2>Choose a deck</h2>
+                </div>
+                <span id="selected-deck-label" class="selection-pill">Random</span>
+              </div>
 
-          <p class="start-hint">Landscape mode • 60 seconds</p>
+              <div id="deck-grid" class="deck-grid" aria-label="Decks"></div>
+            </section>
+
+            <section class="setup-section time-section">
+              <div class="section-heading">
+                <div>
+                  <span class="step-label">02</span>
+                  <h2>Round length</h2>
+                </div>
+              </div>
+
+              <div id="time-options" class="time-options" aria-label="Round length">
+                <button class="time-option" type="button" data-time="30">30s</button>
+                <button class="time-option active" type="button" data-time="60">60s</button>
+                <button class="time-option" type="button" data-time="90">90s</button>
+                <button class="time-option" type="button" data-time="120">2 min</button>
+              </div>
+            </section>
+
+            <div class="home-actions">
+              <button id="start-btn" class="primary-button play-button" type="button">
+                PLAY
+              </button>
+
+              <div class="secondary-actions">
+                <button id="create-deck-btn" class="secondary-button" type="button">
+                  + CREATE DECK
+                </button>
+                <button id="how-to-btn" class="secondary-button" type="button">
+                  HOW TO PLAY
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="start-hint">Home works in portrait • Game plays in landscape</p>
+        </div>
+
+        <!-- CUSTOM DECK MODAL -->
+        <div id="custom-deck-modal" class="home-modal hidden" role="dialog" aria-modal="true" aria-labelledby="custom-deck-title">
+          <div class="modal-card">
+            <div class="modal-heading">
+              <div>
+                <p class="eyebrow">MAKE IT YOURS</p>
+                <h2 id="custom-deck-title">Create a deck</h2>
+              </div>
+              <button class="modal-close" type="button" data-close-modal="custom-deck-modal" aria-label="Close">×</button>
+            </div>
+
+            <label class="field-label" for="custom-deck-name">Deck name</label>
+            <input id="custom-deck-name" class="text-input" type="text" maxlength="28" placeholder="e.g. Family Inside Jokes" />
+
+            <label class="field-label" for="custom-deck-words">Words</label>
+            <textarea id="custom-deck-words" class="text-input word-input" rows="7" placeholder="Add one word or phrase per line&#10;Bhangra&#10;Chaa&#10;Tractor"></textarea>
+            <p class="field-help">Add at least 3 unique words. Commas also work.</p>
+            <p id="custom-deck-error" class="form-error" aria-live="polite"></p>
+
+            <div class="modal-actions">
+              <button class="secondary-button" type="button" data-close-modal="custom-deck-modal">CANCEL</button>
+              <button id="save-deck-btn" class="primary-button compact-button" type="button">SAVE DECK</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- HOW TO PLAY MODAL -->
+        <div id="how-to-modal" class="home-modal hidden" role="dialog" aria-modal="true" aria-labelledby="how-to-title">
+          <div class="modal-card how-to-card">
+            <div class="modal-heading">
+              <div>
+                <p class="eyebrow">QUICK GUIDE</p>
+                <h2 id="how-to-title">How to play</h2>
+              </div>
+              <button class="modal-close" type="button" data-close-modal="how-to-modal" aria-label="Close">×</button>
+            </div>
+
+            <div class="how-to-list">
+              <div><strong>1</strong><p>Choose a deck and round length, then press Play.</p></div>
+              <div><strong>2</strong><p>Turn the phone sideways and hold it against your forehead.</p></div>
+              <div><strong>3</strong><p>Use the tilt controls shown during the round to mark Correct or Pass.</p></div>
+              <div><strong>4</strong><p>When time ends, review your score and every word you attempted.</p></div>
+            </div>
+
+            <button class="primary-button compact-button modal-full-button" type="button" data-close-modal="how-to-modal">GOT IT</button>
+          </div>
         </div>
       </section>
 
@@ -130,21 +221,51 @@
 
         <div id="end-screen" class="end-screen hidden" aria-live="polite">
           <div class="end-card">
-            <p class="eyebrow">ROUND OVER</p>
-            <h2>TIME!</h2>
-
-            <div class="final-score">
-              <span>SCORE</span>
-              <strong id="final-score">0</strong>
+            <div class="results-topline">
+              <div>
+                <p class="eyebrow">ROUND OVER</p>
+                <h2>TIME!</h2>
+              </div>
+              <div class="final-score">
+                <span>SCORE</span>
+                <strong id="final-score">0</strong>
+              </div>
             </div>
 
-            <div class="final-stats">
-              <span>Passes <strong id="final-passes">0</strong></span>
+            <div class="results-summary">
+              <div>
+                <span>CORRECT</span>
+                <strong id="final-correct">0</strong>
+              </div>
+              <div>
+                <span>PASSES</span>
+                <strong id="final-passes">0</strong>
+              </div>
+              <div>
+                <span>ACCURACY</span>
+                <strong id="final-accuracy">0%</strong>
+              </div>
             </div>
 
-            <button id="play-again-btn" class="primary-button" type="button">
-              PLAY AGAIN
-            </button>
+            <div class="result-list-wrap">
+              <div class="result-list-heading">
+                <span>WORD</span>
+                <span>RESULT</span>
+              </div>
+              <div id="result-list" class="result-list"></div>
+            </div>
+
+            <div class="end-actions">
+              <button id="play-again-btn" class="primary-button" type="button">
+                PLAY AGAIN
+              </button>
+              <button id="change-deck-btn" class="secondary-button" type="button">
+                CHANGE DECK
+              </button>
+              <button id="home-btn" class="text-button" type="button">
+                HOME
+              </button>
+            </div>
           </div>
         </div>
 
