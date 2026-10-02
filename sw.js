@@ -1,4 +1,4 @@
-const CACHE_NAME = "punjabi-charades-v13-motion";
+const CACHE_NAME = "punjabi-charades-v14-home-scorecard";
 
 const FILES_TO_CACHE = [
   "./",

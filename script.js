@@ -3,8 +3,101 @@
 // iPhone Safari / Android Chrome
 // ================================================================
 
-const WORDS = ["ELEPHANT", "PIZZA", "BATMAN", "CRICKET", "MOUNTAIN"];
+const DEFAULT_DECKS = [
+  {
+    id: "random",
+    name: "Random",
+    emoji: "🎲",
+    words: null,
+  },
+  {
+    id: "punjabi-movies",
+    name: "Punjabi Movies",
+    emoji: "🎬",
+    words: [
+      "CARRY ON JATTA",
+      "JATT & JULIET",
+      "CHAL MERA PUTT",
+      "QISMAT",
+      "ANGREJ",
+      "SHADAA",
+      "HONSLA RAKH",
+      "LAHORE",
+      "NIKKA ZAILDAR",
+      "ARDAAS",
+    ],
+  },
+  {
+    id: "punjabi-stars",
+    name: "Punjabi Stars",
+    emoji: "⭐",
+    words: [
+      "DILJIT DOSANJH",
+      "KARAN AUJLA",
+      "SIDHU MOOSE WALA",
+      "GIPPY GREWAL",
+      "AMMY VIRK",
+      "AP DHILLON",
+      "JASMINE SANDLAS",
+      "NIMRAT KHAIRA",
+      "SONAM BAJWA",
+      "NEERU BAJWA",
+    ],
+  },
+  {
+    id: "punjabi-food",
+    name: "Punjabi Food",
+    emoji: "🥘",
+    words: [
+      "ALOO PARATHA",
+      "LASSI",
+      "SAMOSA",
+      "JALEBI",
+      "GOL GAPPE",
+      "PANEER TIKKA",
+      "SARSON DA SAAG",
+      "MAKKI DI ROTI",
+      "AMRITSARI KULCHA",
+      "CHOLE BHATURE",
+    ],
+  },
+  {
+    id: "cricket",
+    name: "Cricket",
+    emoji: "🏏",
+    words: [
+      "VIRAT KOHLI",
+      "MS DHONI",
+      "JASPRIT BUMRAH",
+      "YORKER",
+      "SIX",
+      "WICKET",
+      "UMPIRE",
+      "POWERPLAY",
+      "CATCH",
+      "SPINNER",
+    ],
+  },
+  {
+    id: "punjabi-vibes",
+    name: "Punjabi Vibes",
+    emoji: "🔥",
+    words: [
+      "GABRU",
+      "PATOLA",
+      "JUGAAD",
+      "PIND",
+      "BALLE BALLE",
+      "CHAK DE",
+      "YAAR",
+      "SHER",
+      "NAKHRA",
+      "GEDI",
+    ],
+  },
+];
 
+const CUSTOM_DECKS_STORAGE_KEY = "punjabi-charades-custom-decks";
 const GAME_TIME = 60;
 
 const MOTION = {
@@ -37,6 +130,12 @@ const game = {
 
   score: 0,
   passes: 0,
+  results: [],
+
+  selectedDeckId: "random",
+  selectedDeckName: "Random",
+  words: [],
+  roundTime: GAME_TIME,
 
   timeLeft: GAME_TIME,
   remainingMs: GAME_TIME * 1000,
@@ -105,15 +204,283 @@ const scoreElement = document.getElementById("score");
 const passElement = document.getElementById("final-passes");
 const timerElement = document.getElementById("timer");
 const finalScoreElement = document.getElementById("final-score");
+const finalCorrectElement = document.getElementById("final-correct");
+const finalAccuracyElement = document.getElementById("final-accuracy");
+const resultListElement = document.getElementById("result-list");
+const categoryNameElement = document.getElementById("category-name");
+
+const deckGrid = document.getElementById("deck-grid");
+const selectedDeckLabel = document.getElementById("selected-deck-label");
+const timeOptions = document.getElementById("time-options");
+const customDeckModal = document.getElementById("custom-deck-modal");
+const howToModal = document.getElementById("how-to-modal");
+const customDeckNameInput = document.getElementById("custom-deck-name");
+const customDeckWordsInput = document.getElementById("custom-deck-words");
+const customDeckError = document.getElementById("custom-deck-error");
 
 const startButton = document.getElementById("start-btn");
 const correctButton = document.getElementById("correct-btn");
 const passButton = document.getElementById("pass-btn");
 const playAgainButton = document.getElementById("play-again-btn");
+const changeDeckButton = document.getElementById("change-deck-btn");
+const homeButton = document.getElementById("home-btn");
+const createDeckButton = document.getElementById("create-deck-btn");
+const howToButton = document.getElementById("how-to-btn");
+const saveDeckButton = document.getElementById("save-deck-btn");
 
 const manualStartButton = document.getElementById("manual-start-btn");
 
 const gestureHint = document.querySelector(".gesture-hint");
+
+// ================================================================
+// HOME / DECKS
+// ================================================================
+
+function readCustomDecks() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CUSTOM_DECKS_STORAGE_KEY) || "[]");
+
+    if (!Array.isArray(saved)) return [];
+
+    return saved.filter(
+      (deck) =>
+        deck &&
+        typeof deck.id === "string" &&
+        typeof deck.name === "string" &&
+        Array.isArray(deck.words) &&
+        deck.words.length >= 3,
+    );
+  } catch {
+    return [];
+  }
+}
+
+function writeCustomDecks(decks) {
+  try {
+    localStorage.setItem(CUSTOM_DECKS_STORAGE_KEY, JSON.stringify(decks));
+  } catch (error) {
+    console.warn("Could not save custom decks:", error);
+  }
+}
+
+function getAllDecks() {
+  return [...DEFAULT_DECKS, ...readCustomDecks()];
+}
+
+function getDeckById(deckId) {
+  return getAllDecks().find((deck) => deck.id === deckId) || DEFAULT_DECKS[0];
+}
+
+function getWordsForDeck(deckId) {
+  if (deckId === "random") {
+    return DEFAULT_DECKS.filter((deck) => Array.isArray(deck.words)).flatMap(
+      (deck) => deck.words,
+    );
+  }
+
+  const deck = getDeckById(deckId);
+
+  return Array.isArray(deck.words) ? [...deck.words] : [];
+}
+
+function renderDecks() {
+  if (!deckGrid) return;
+
+  deckGrid.innerHTML = "";
+
+  for (const deck of getAllDecks()) {
+    const item = document.createElement("div");
+    item.className = "deck-item";
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "deck-card";
+    button.dataset.deckId = deck.id;
+
+    if (deck.id === game.selectedDeckId) {
+      button.classList.add("active");
+      button.setAttribute("aria-pressed", "true");
+    } else {
+      button.setAttribute("aria-pressed", "false");
+    }
+
+    const emoji = document.createElement("span");
+    emoji.className = "deck-emoji";
+    emoji.textContent = deck.emoji || "✨";
+
+    const copy = document.createElement("span");
+    copy.className = "deck-copy";
+
+    const name = document.createElement("span");
+    name.className = "deck-name";
+    name.textContent = deck.name;
+
+    const count = document.createElement("span");
+    count.className = "deck-count";
+
+    const wordCount =
+      deck.id === "random" ? getWordsForDeck("random").length : deck.words.length;
+
+    count.textContent = deck.id === "random" ? wordCount + " mixed words" : wordCount + " words";
+
+    copy.append(name, count);
+    button.append(emoji, copy);
+
+    button.addEventListener("click", () => {
+      selectDeck(deck.id);
+    });
+
+    item.appendChild(button);
+
+    if (deck.custom) {
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "deck-delete";
+      remove.textContent = "×";
+      remove.setAttribute("aria-label", "Delete " + deck.name);
+
+      remove.addEventListener("click", (event) => {
+        event.stopPropagation();
+
+        if (!window.confirm('Delete "' + deck.name + '"?')) {
+          return;
+        }
+
+        const customDecks = readCustomDecks().filter(
+          (customDeck) => customDeck.id !== deck.id,
+        );
+
+        writeCustomDecks(customDecks);
+
+        if (game.selectedDeckId === deck.id) {
+          game.selectedDeckId = "random";
+          game.selectedDeckName = "Random";
+        }
+
+        renderDecks();
+        updateSelectedDeckLabel();
+      });
+
+      item.appendChild(remove);
+    }
+
+    deckGrid.appendChild(item);
+  }
+}
+
+function updateSelectedDeckLabel() {
+  if (selectedDeckLabel) {
+    selectedDeckLabel.textContent = game.selectedDeckName;
+  }
+}
+
+function selectDeck(deckId) {
+  const deck = getDeckById(deckId);
+
+  game.selectedDeckId = deck.id;
+  game.selectedDeckName = deck.name;
+
+  updateSelectedDeckLabel();
+  renderDecks();
+}
+
+function setRoundTime(seconds) {
+  if (![30, 60, 90, 120].includes(seconds)) return;
+
+  game.roundTime = seconds;
+
+  timeOptions?.querySelectorAll("[data-time]").forEach((button) => {
+    button.classList.toggle("active", Number(button.dataset.time) === seconds);
+  });
+}
+
+function openHomeModal(modal) {
+  modal?.classList.remove("hidden");
+}
+
+function closeHomeModal(modal) {
+  modal?.classList.add("hidden");
+}
+
+function showHome({ focusDecks = false } = {}) {
+  game.running = false;
+  game.roundActive = false;
+  game.phase = "idle";
+
+  clearInterval(game.timer);
+  clearInterval(game.countdownTimer);
+  clearTimeout(game.sensorTimeout);
+  clearTimeout(game.setupTimer);
+
+  game.timer = null;
+  game.countdownTimer = null;
+
+  hideMotionSetup();
+  endScreen?.classList.add("hidden");
+  gameScreen?.classList.add("hidden");
+  startScreen?.classList.remove("hidden");
+
+  void releaseWakeLock();
+
+  if (focusDecks) {
+    requestAnimationFrame(() => {
+      document.getElementById("deck-section")?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    });
+  } else {
+    startScreen?.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+function saveCustomDeck() {
+  if (!customDeckNameInput || !customDeckWordsInput) return;
+
+  const name = customDeckNameInput.value.trim();
+  const words = [
+    ...new Set(
+      customDeckWordsInput.value
+        .split(/[\n,]+/)
+        .map((word) => word.trim().replace(/\s+/g, " ").toUpperCase())
+        .filter(Boolean),
+    ),
+  ];
+
+  if (!name) {
+    if (customDeckError) customDeckError.textContent = "Give your deck a name.";
+    customDeckNameInput.focus();
+    return;
+  }
+
+  if (words.length < 3) {
+    if (customDeckError) {
+      customDeckError.textContent = "Add at least 3 unique words or phrases.";
+    }
+    customDeckWordsInput.focus();
+    return;
+  }
+
+  const customDecks = readCustomDecks();
+
+  const deck = {
+    id: "custom-" + Date.now(),
+    name,
+    emoji: "✨",
+    words,
+    custom: true,
+  };
+
+  customDecks.push(deck);
+  writeCustomDecks(customDecks);
+
+  customDeckNameInput.value = "";
+  customDeckWordsInput.value = "";
+  if (customDeckError) customDeckError.textContent = "";
+
+  closeHomeModal(customDeckModal);
+  selectDeck(deck.id);
+}
 
 // ================================================================
 // BASIC HELPERS
@@ -1116,9 +1483,18 @@ function prepareRound() {
 
   game.score = 0;
   game.passes = 0;
+  game.results = [];
 
-  game.timeLeft = GAME_TIME;
-  game.remainingMs = GAME_TIME * 1000;
+  game.words = getWordsForDeck(game.selectedDeckId);
+
+  if (!game.words.length) {
+    game.selectedDeckId = "random";
+    game.selectedDeckName = "Random";
+    game.words = getWordsForDeck("random");
+  }
+
+  game.timeLeft = game.roundTime;
+  game.remainingMs = game.roundTime * 1000;
   game.deadline = 0;
 
   game.currentWord = "";
@@ -1132,6 +1508,10 @@ function prepareRound() {
 
   updateScore();
   updateTimer();
+
+  if (categoryNameElement) {
+    categoryNameElement.textContent = game.selectedDeckName.toUpperCase();
+  }
 
   showGameScreen();
 
@@ -1178,11 +1558,17 @@ function startGameFromGesture() {
 function nextWord() {
   if (!game.running) return;
 
-  if (game.usedWords.length >= WORDS.length) {
+  if (!game.words.length) {
+    game.words = getWordsForDeck(game.selectedDeckId);
+  }
+
+  if (game.usedWords.length >= game.words.length) {
     game.usedWords = [];
   }
 
-  const availableWords = WORDS.filter((word) => !game.usedWords.includes(word));
+  const availableWords = game.words.filter(
+    (word) => !game.usedWords.includes(word),
+  );
 
   const randomIndex = Math.floor(Math.random() * availableWords.length);
 
@@ -1229,6 +1615,11 @@ function correctAnswer(source = "manual") {
     latchMotionAfterManualAction();
   }
 
+  game.results.push({
+    word: game.currentWord,
+    status: "correct",
+  });
+
   game.score += 1;
 
   updateScore();
@@ -1243,6 +1634,11 @@ function passWord(source = "manual") {
   if (source !== "motion") {
     latchMotionAfterManualAction();
   }
+
+  game.results.push({
+    word: game.currentWord,
+    status: "pass",
+  });
 
   game.passes += 1;
 
@@ -1269,8 +1665,47 @@ function updateEndScreen() {
     finalScoreElement.textContent = game.score;
   }
 
+  if (finalCorrectElement) {
+    finalCorrectElement.textContent = game.score;
+  }
+
   if (passElement) {
     passElement.textContent = game.passes;
+  }
+
+  const attempts = game.results.length;
+  const accuracy = attempts ? Math.round((game.score / attempts) * 100) : 0;
+
+  if (finalAccuracyElement) {
+    finalAccuracyElement.textContent = accuracy + "%";
+  }
+
+  if (!resultListElement) return;
+
+  resultListElement.innerHTML = "";
+
+  if (!game.results.length) {
+    const empty = document.createElement("div");
+    empty.className = "result-empty";
+    empty.textContent = "No words were answered this round.";
+    resultListElement.appendChild(empty);
+    return;
+  }
+
+  for (const result of game.results) {
+    const row = document.createElement("div");
+    row.className = "result-row";
+
+    const word = document.createElement("span");
+    word.className = "result-word";
+    word.textContent = result.word;
+
+    const status = document.createElement("span");
+    status.className = "result-status " + result.status;
+    status.textContent = result.status === "correct" ? "✓ CORRECT" : "PASS";
+
+    row.append(word, status);
+    resultListElement.appendChild(row);
   }
 }
 
@@ -1347,7 +1782,7 @@ function beginActiveRound() {
 function startTimer() {
   clearInterval(game.timer);
 
-  game.remainingMs = GAME_TIME * 1000;
+  game.remainingMs = game.roundTime * 1000;
 
   resumeTimer();
 }
@@ -1580,6 +2015,52 @@ startButton?.addEventListener("click", startGameFromGesture);
 
 playAgainButton?.addEventListener("click", startGameFromGesture);
 
+changeDeckButton?.addEventListener("click", () => {
+  showHome({ focusDecks: true });
+});
+
+homeButton?.addEventListener("click", () => {
+  showHome();
+});
+
+createDeckButton?.addEventListener("click", () => {
+  if (customDeckError) customDeckError.textContent = "";
+  openHomeModal(customDeckModal);
+  setTimeout(() => customDeckNameInput?.focus(), 0);
+});
+
+howToButton?.addEventListener("click", () => {
+  openHomeModal(howToModal);
+});
+
+saveDeckButton?.addEventListener("click", saveCustomDeck);
+
+document.querySelectorAll("[data-close-modal]").forEach((button) => {
+  button.addEventListener("click", () => {
+    closeHomeModal(document.getElementById(button.dataset.closeModal));
+  });
+});
+
+customDeckModal?.addEventListener("click", (event) => {
+  if (event.target === customDeckModal) {
+    closeHomeModal(customDeckModal);
+  }
+});
+
+howToModal?.addEventListener("click", (event) => {
+  if (event.target === howToModal) {
+    closeHomeModal(howToModal);
+  }
+});
+
+timeOptions?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-time]");
+
+  if (!button) return;
+
+  setRoundTime(Number(button.dataset.time));
+});
+
 correctButton?.addEventListener("click", () => correctAnswer("button"));
 
 passButton?.addEventListener("click", () => passWord("button"));
@@ -1715,6 +2196,13 @@ document.addEventListener("visibilitychange", () => {
     void requestWakeLock();
   }
 });
+
+// ================================================================
+// HOME INITIALIZATION
+// ================================================================
+
+selectDeck(game.selectedDeckId);
+setRoundTime(game.roundTime);
 
 // ================================================================
 // SERVICE WORKER
