@@ -980,8 +980,8 @@ function processGesture() {
   }
 
   /*
-   * DOWN = negative = CORRECT
-   * UP   = positive = PASS
+   * DOWN = negative = PASS
+   * UP   = positive = CORRECT
    */
   const direction = signedTilt < 0 ? "pass" : "correct";
 
