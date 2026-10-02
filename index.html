@@ -1,244 +1,162 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
-    <meta name="theme-color" content="#f7b731" />
-    <title>Punjabi Heads Up!</title>
+    <meta name="theme-color" content="#09090f" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta
+      name="description"
+      content="A fast and fun charades game you can play anywhere."
+    />
+    <title>Punjabi Charades</title>
+    <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="style.css" />
   </head>
+
   <body>
-    <main class="app-shell">
-      <section
-        id="homeScreen"
-        class="screen active"
-        aria-labelledby="homeTitle"
-      >
-        <div class="hero-pattern" aria-hidden="true"></div>
-        <div class="brand-mark">ਪ</div>
-        <p class="eyebrow">PUNJABI CHARADES</p>
-        <h1 id="homeTitle">Punjabi<br /><span>Heads Up!</span></h1>
-        <p class="subtitle">
-          Guess the word. Tilt the phone. Keep the party moving.
-        </p>
+    <main id="app">
+      <!-- START SCREEN -->
+      <section id="start-screen" class="screen start-screen">
+        <div class="start-content">
+          <p class="eyebrow">PUNJABI CHARADES</p>
+          <h1>CHARADES</h1>
+          <p class="tagline">
+            Put the phone on your forehead.<br />Let the guessing begin.
+          </p>
 
-        <div class="panel setup-panel">
-          <div class="section-label">Choose a deck</div>
-          <div id="deckList" class="deck-list"></div>
-          <button
-            id="newDeckBtn"
-            class="button button-secondary wide"
-            type="button"
-          >
-            + Make your own deck
+          <button id="start-btn" class="primary-button" type="button">
+            PLAY
           </button>
-        </div>
 
-        <div class="panel setup-panel">
-          <div class="section-label">Round length</div>
-          <div class="timer-options" role="group" aria-label="Round length">
-            <button class="timer-chip" data-seconds="30" type="button">
-              30s
-            </button>
-            <button class="timer-chip selected" data-seconds="60" type="button">
-              60s
-            </button>
-            <button class="timer-chip" data-seconds="90" type="button">
-              90s
-            </button>
-          </div>
-          <label class="switch-row">
-            <span>
-              <strong>Reverse tilt direction</strong>
-              <small
-                >Use this if Correct and Pass feel backwards on your
-                phone.</small
-              >
-            </span>
-            <input id="reverseTilt" type="checkbox" />
-          </label>
-        </div>
-
-        <button
-          id="startBtn"
-          class="button button-primary start-button"
-          type="button"
-        >
-          START GAME
-        </button>
-        <p id="supportText" class="support-text">
-          Best played on a phone in landscape mode.
-        </p>
-      </section>
-
-      <section id="deckScreen" class="screen" aria-labelledby="deckTitle">
-        <button
-          class="back-button"
-          data-back="home"
-          type="button"
-          aria-label="Back"
-        >
-          ←
-        </button>
-        <p class="eyebrow">CUSTOM DECK</p>
-        <h2 id="deckTitle">Make your own</h2>
-        <p class="subtitle compact">
-          Add one word or phrase per line. Your deck stays saved on this device.
-        </p>
-
-        <form id="deckForm" class="panel deck-form">
-          <label>
-            <span>Deck name</span>
-            <input
-              id="deckName"
-              maxlength="28"
-              placeholder="e.g. Family Night"
-              required
-            />
-          </label>
-          <label>
-            <span>Words / phrases</span>
-            <textarea
-              id="deckWords"
-              rows="10"
-              placeholder="Diljit Dosanjh&#10;Bhangra&#10;Lassi&#10;Tractor"
-              required
-            ></textarea>
-          </label>
-          <div class="form-hint"><span id="wordCount">0</span> words</div>
-          <button class="button button-primary wide" type="submit">
-            SAVE DECK
-          </button>
-        </form>
-      </section>
-
-      <section
-        id="readyScreen"
-        class="screen game-prep"
-        aria-labelledby="readyTitle"
-      >
-        <button
-          class="back-button light"
-          data-back="home"
-          type="button"
-          aria-label="Back"
-        >
-          ←
-        </button>
-        <div class="prep-card">
-          <p class="eyebrow light-text">GET READY</p>
-          <h2 id="readyTitle">Turn your phone sideways</h2>
-          <div class="phone-demo" aria-hidden="true">
-            <div class="demo-phone"><span>PUNJABI</span></div>
-            <div class="forehead-line"></div>
-          </div>
-          <p>Hold the screen facing your friends, against your forehead.</p>
-          <div class="gesture-guide">
-            <div>
-              <span class="gesture-arrow down">↓</span><strong>Tilt down</strong
-              ><small>Correct</small>
-            </div>
-            <div>
-              <span class="gesture-arrow up">↑</span><strong>Tilt up</strong
-              ><small>Pass</small>
-            </div>
-          </div>
-          <button
-            id="permissionBtn"
-            class="button button-dark wide"
-            type="button"
-          >
-            I'M READY
-          </button>
-          <p id="permissionStatus" class="mini-status"></p>
+          <p class="start-hint">Landscape mode • 60 seconds</p>
         </div>
       </section>
 
-      <section
-        id="countdownScreen"
-        class="screen countdown-screen"
-        aria-live="assertive"
-      >
-        <p class="eyebrow light-text">HOLD IT STEADY</p>
-        <div id="countdownNumber" class="countdown-number">3</div>
-        <p>Stay in your normal forehead position while the game calibrates.</p>
-      </section>
-
-      <section
-        id="gameScreen"
-        class="screen game-screen"
-        aria-labelledby="gameWord"
-      >
+      <!-- GAME SCREEN -->
+      <section id="game-screen" class="screen game-screen hidden">
         <header class="game-header">
-          <div>
-            <span class="header-label">TIME</span
-            ><strong id="timerDisplay">60</strong>
+          <div class="category">
+            <span class="label">CATEGORY</span>
+            <strong id="category-name">RANDOM</strong>
           </div>
-          <div class="game-deck-name" id="gameDeckName">Punjabi Starter</div>
-          <div>
-            <span class="header-label">SCORE</span
-            ><strong id="scoreDisplay">0</strong>
+
+          <div class="score-display">
+            <span class="label">SCORE</span>
+            <strong id="score">0</strong>
           </div>
+
+          <div id="timer" class="timer" aria-label="Time remaining">60</div>
         </header>
 
-        <div id="feedbackOverlay" class="feedback-overlay" aria-hidden="true">
-          <div id="feedbackText">CORRECT!</div>
+        <div class="game-stage">
+          <div class="gesture-label gesture-left" aria-hidden="true">
+            ← PASS
+          </div>
+
+          <button
+            id="word"
+            class="word"
+            type="button"
+            aria-label="Tap to mark correct"
+          >
+            ELEPHANT
+          </button>
+
+          <div class="gesture-label gesture-right" aria-hidden="true">
+            CORRECT →
+          </div>
         </div>
 
-        <div class="word-stage">
-          <p class="word-hint">GUESS THIS</p>
-          <h2 id="gameWord">Bhangra</h2>
-          <p id="motionHint" class="motion-hint">Return to neutral</p>
+        <div class="gesture-hint" aria-hidden="true">
+          TILT UP = PASS &nbsp; • &nbsp; TILT DOWN = CORRECT &nbsp; • &nbsp;
+          SWIPE ← PASS / CORRECT →
         </div>
 
-        <div class="fallback-controls">
-          <button id="passBtn" class="button pass-button" type="button">
+        <footer class="game-footer">
+          <button id="pass-btn" class="game-button pass-button" type="button">
             PASS
           </button>
-          <button id="correctBtn" class="button correct-button" type="button">
-            CORRECT
-          </button>
-        </div>
-      </section>
 
-      <section id="resultsScreen" class="screen" aria-labelledby="resultsTitle">
-        <div class="results-top">
-          <p class="eyebrow">ROUND OVER</p>
-          <h2 id="resultsTitle">Nice one!</h2>
-          <div class="score-badge">
-            <span id="finalScore">0</span><small>correct</small>
+          <button
+            id="correct-btn"
+            class="game-button correct-button"
+            type="button"
+          >
+            ✓ CORRECT
+          </button>
+        </footer>
+
+        <div id="motion-setup" class="motion-setup hidden" aria-live="polite">
+          <div class="motion-setup-card">
+            <div class="motion-icon" aria-hidden="true">📱</div>
+
+            <p class="eyebrow">MOTION SETUP</p>
+
+            <h2 id="motion-title">PUT PHONE TO FOREHEAD</h2>
+
+            <p id="motion-instruction">
+              Hold the phone in landscape against your forehead and keep it
+              still for a moment.
+            </p>
+
+            <div class="setup-progress" aria-hidden="true">
+              <span id="setup-dot-1"></span>
+              <span id="setup-dot-2"></span>
+              <span id="setup-dot-3"></span>
+            </div>
+
+            <p id="motion-status" class="motion-status">
+              Waiting for motion sensor…
+            </p>
+
+            <button
+              id="manual-start-btn"
+              class="secondary-button"
+              type="button"
+            >
+              PLAY WITHOUT MOTION
+            </button>
           </div>
         </div>
-        <div class="panel results-panel">
-          <div class="results-heading">
-            <strong>Your round</strong><span id="resultsSummary"></span>
+
+        <div id="end-screen" class="end-screen hidden" aria-live="polite">
+          <div class="end-card">
+            <p class="eyebrow">ROUND OVER</p>
+            <h2>TIME!</h2>
+
+            <div class="final-score">
+              <span>SCORE</span>
+              <strong id="final-score">0</strong>
+            </div>
+
+            <div class="final-stats">
+              <span>Passes <strong id="final-passes">0</strong></span>
+            </div>
+
+            <button id="play-again-btn" class="primary-button" type="button">
+              PLAY AGAIN
+            </button>
           </div>
-          <div id="resultsList" class="results-list"></div>
         </div>
-        <div class="results-actions">
-          <button id="playAgainBtn" class="button button-primary" type="button">
-            PLAY AGAIN
-          </button>
-          <button id="homeBtn" class="button button-secondary" type="button">
-            HOME
-          </button>
+
+        <div id="rotate-message" class="rotate-message">
+          <div>
+            <span class="rotate-icon">↻</span>
+            <strong>Turn your phone sideways</strong>
+            <p>Charades works best in landscape.</p>
+          </div>
         </div>
       </section>
     </main>
-
-    <div
-      id="rotateNotice"
-      class="rotate-notice"
-      role="dialog"
-      aria-modal="true"
-    >
-      <div class="rotate-phone">↻</div>
-      <strong>Rotate your phone sideways</strong>
-      <span>The game is designed for landscape mode.</span>
-    </div>
 
     <script src="script.js"></script>
   </body>
