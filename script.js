@@ -1347,10 +1347,10 @@ function processGesture() {
   }
 
   /*
-   * DOWN = negative = PASS
-   * UP   = positive = CORRECT
+   * DOWN = negative = CORRECT
+   * UP   = positive = PASS
    */
-  const direction = signedTilt < 0 ? "pass" : "correct";
+  const direction = signedTilt < 0 ? "correct" : "pass";
 
   const recentGyro = now - game.lastGyroAt < 220;
 
