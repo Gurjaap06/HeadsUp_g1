@@ -31,7 +31,8 @@
             <p class="eyebrow">PUNJABI CHARADES</p>
             <h1>CHARADES</h1>
             <p class="tagline">
-              Pick a deck, choose your round, and put the phone on your forehead.
+              Pick a deck, choose your round, and put the phone on your
+              forehead.
             </p>
           </header>
 
@@ -42,7 +43,9 @@
                   <span class="step-label">01</span>
                   <h2>Choose a deck</h2>
                 </div>
-                <span id="selected-deck-label" class="selection-pill">Random</span>
+                <span id="selected-deck-label" class="selection-pill"
+                  >Random</span
+                >
               </div>
 
               <div id="deck-grid" class="deck-grid" aria-label="Decks"></div>
@@ -56,21 +59,41 @@
                 </div>
               </div>
 
-              <div id="time-options" class="time-options" aria-label="Round length">
-                <button class="time-option" type="button" data-time="30">30s</button>
-                <button class="time-option active" type="button" data-time="60">60s</button>
-                <button class="time-option" type="button" data-time="90">90s</button>
-                <button class="time-option" type="button" data-time="120">2 min</button>
+              <div
+                id="time-options"
+                class="time-options"
+                aria-label="Round length"
+              >
+                <button class="time-option" type="button" data-time="30">
+                  30s
+                </button>
+                <button class="time-option active" type="button" data-time="60">
+                  60s
+                </button>
+                <button class="time-option" type="button" data-time="90">
+                  90s
+                </button>
+                <button class="time-option" type="button" data-time="120">
+                  2 min
+                </button>
               </div>
             </section>
 
             <div class="home-actions">
-              <button id="start-btn" class="primary-button play-button" type="button">
+              <button
+                id="start-btn"
+                class="primary-button play-button"
+                type="button"
+              >
                 PLAY
               </button>
 
               <div class="secondary-actions">
-                <button id="create-deck-btn" class="secondary-button" type="button">
+                <button
+                  id="create-deck-btn"
+                  class="secondary-button"
+                  type="button"
+                >
                   + CREATE DECK
                 </button>
                 <button id="how-to-btn" class="secondary-button" type="button">
@@ -80,54 +103,133 @@
             </div>
           </div>
 
-          <p class="start-hint">Home works in portrait • Game plays in landscape</p>
+          <p class="start-hint">
+            Home works in portrait • Game plays in landscape
+          </p>
         </div>
 
         <!-- CUSTOM DECK MODAL -->
-        <div id="custom-deck-modal" class="home-modal hidden" role="dialog" aria-modal="true" aria-labelledby="custom-deck-title">
+        <div
+          id="custom-deck-modal"
+          class="home-modal hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="custom-deck-title"
+        >
           <div class="modal-card">
             <div class="modal-heading">
               <div>
                 <p class="eyebrow">MAKE IT YOURS</p>
                 <h2 id="custom-deck-title">Create a deck</h2>
               </div>
-              <button class="modal-close" type="button" data-close-modal="custom-deck-modal" aria-label="Close">×</button>
+              <button
+                class="modal-close"
+                type="button"
+                data-close-modal="custom-deck-modal"
+                aria-label="Close"
+              >
+                ×
+              </button>
             </div>
 
             <label class="field-label" for="custom-deck-name">Deck name</label>
-            <input id="custom-deck-name" class="text-input" type="text" maxlength="28" placeholder="e.g. Family Inside Jokes" />
+            <input
+              id="custom-deck-name"
+              class="text-input"
+              type="text"
+              maxlength="28"
+              placeholder="e.g. Family Inside Jokes"
+            />
 
             <label class="field-label" for="custom-deck-words">Words</label>
-            <textarea id="custom-deck-words" class="text-input word-input" rows="7" placeholder="Add one word or phrase per line&#10;Bhangra&#10;Chaa&#10;Tractor"></textarea>
-            <p class="field-help">Add at least 3 unique words. Commas also work.</p>
+            <textarea
+              id="custom-deck-words"
+              class="text-input word-input"
+              rows="7"
+              placeholder="Add one word or phrase per line&#10;Bhangra&#10;Chaa&#10;Tractor"
+            ></textarea>
+            <p class="field-help">
+              Add at least 3 unique words. Commas also work.
+            </p>
             <p id="custom-deck-error" class="form-error" aria-live="polite"></p>
 
             <div class="modal-actions">
-              <button class="secondary-button" type="button" data-close-modal="custom-deck-modal">CANCEL</button>
-              <button id="save-deck-btn" class="primary-button compact-button" type="button">SAVE DECK</button>
+              <button
+                class="secondary-button"
+                type="button"
+                data-close-modal="custom-deck-modal"
+              >
+                CANCEL
+              </button>
+              <button
+                id="save-deck-btn"
+                class="primary-button compact-button"
+                type="button"
+              >
+                SAVE DECK
+              </button>
             </div>
           </div>
         </div>
 
         <!-- HOW TO PLAY MODAL -->
-        <div id="how-to-modal" class="home-modal hidden" role="dialog" aria-modal="true" aria-labelledby="how-to-title">
+        <div
+          id="how-to-modal"
+          class="home-modal hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="how-to-title"
+        >
           <div class="modal-card how-to-card">
             <div class="modal-heading">
               <div>
                 <p class="eyebrow">QUICK GUIDE</p>
                 <h2 id="how-to-title">How to play</h2>
               </div>
-              <button class="modal-close" type="button" data-close-modal="how-to-modal" aria-label="Close">×</button>
+              <button
+                class="modal-close"
+                type="button"
+                data-close-modal="how-to-modal"
+                aria-label="Close"
+              >
+                ×
+              </button>
             </div>
 
             <div class="how-to-list">
-              <div><strong>1</strong><p>Choose a deck and round length, then press Play.</p></div>
-              <div><strong>2</strong><p>Turn the phone sideways and hold it against your forehead.</p></div>
-              <div><strong>3</strong><p>Use the tilt controls shown during the round to mark Correct or Pass.</p></div>
-              <div><strong>4</strong><p>When time ends, review your score and every word you attempted.</p></div>
+              <div>
+                <strong>1</strong>
+                <p>Choose a deck and round length, then press Play.</p>
+              </div>
+              <div>
+                <strong>2</strong>
+                <p>
+                  Turn the phone sideways and hold it against your forehead.
+                </p>
+              </div>
+              <div>
+                <strong>3</strong>
+                <p>
+                  Use the tilt controls shown during the round to mark Correct
+                  or Pass.
+                </p>
+              </div>
+              <div>
+                <strong>4</strong>
+                <p>
+                  When time ends, review your score and every word you
+                  attempted.
+                </p>
+              </div>
             </div>
 
-            <button class="primary-button compact-button modal-full-button" type="button" data-close-modal="how-to-modal">GOT IT</button>
+            <button
+              class="primary-button compact-button modal-full-button"
+              type="button"
+              data-close-modal="how-to-modal"
+            >
+              GOT IT
+            </button>
           </div>
         </div>
       </section>
@@ -259,7 +361,11 @@
               <button id="play-again-btn" class="primary-button" type="button">
                 PLAY AGAIN
               </button>
-              <button id="change-deck-btn" class="secondary-button" type="button">
+              <button
+                id="change-deck-btn"
+                class="secondary-button"
+                type="button"
+              >
                 CHANGE DECK
               </button>
               <button id="home-btn" class="text-button" type="button">
