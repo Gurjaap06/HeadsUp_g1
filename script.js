@@ -238,7 +238,9 @@ const gestureHint = document.querySelector(".gesture-hint");
 
 function readCustomDecks() {
   try {
-    const saved = JSON.parse(localStorage.getItem(CUSTOM_DECKS_STORAGE_KEY) || "[]");
+    const saved = JSON.parse(
+      localStorage.getItem(CUSTOM_DECKS_STORAGE_KEY) || "[]",
+    );
 
     if (!Array.isArray(saved)) return [];
 
@@ -319,9 +321,12 @@ function renderDecks() {
     count.className = "deck-count";
 
     const wordCount =
-      deck.id === "random" ? getWordsForDeck("random").length : deck.words.length;
+      deck.id === "random"
+        ? getWordsForDeck("random").length
+        : deck.words.length;
 
-    count.textContent = deck.id === "random" ? wordCount + " mixed words" : wordCount + " words";
+    count.textContent =
+      deck.id === "random" ? wordCount + " mixed words" : wordCount + " words";
 
     copy.append(name, count);
     button.append(emoji, copy);
@@ -1717,6 +1722,21 @@ function startCountdown() {
   if (!game.running) return;
 
   clearInterval(game.countdownTimer);
+  game.countdownTimer = null;
+
+  // Do not start the countdown while the phone is in portrait.
+  // Wait until the player turns the phone sideways.
+  if (!isLandscape()) {
+    game.phase = "paused-portrait";
+    game.roundActive = false;
+    game.pausedForPortraitFrom = "countdown";
+
+    if (wordElement) {
+      wordElement.textContent = "3";
+    }
+
+    return;
+  }
 
   game.phase = "countdown";
   game.roundActive = false;
@@ -1734,6 +1754,20 @@ function startCountdown() {
   game.countdownTimer = setInterval(() => {
     if (!game.running) {
       clearInterval(game.countdownTimer);
+      game.countdownTimer = null;
+      return;
+    }
+
+    // Extra safety: if the phone becomes portrait during
+    // the countdown, stop and wait for landscape again.
+    if (!isLandscape()) {
+      clearInterval(game.countdownTimer);
+      game.countdownTimer = null;
+
+      game.phase = "paused-portrait";
+      game.roundActive = false;
+      game.pausedForPortraitFrom = "countdown";
+
       return;
     }
 
@@ -1748,7 +1782,6 @@ function startCountdown() {
     }
 
     clearInterval(game.countdownTimer);
-
     game.countdownTimer = null;
 
     beginActiveRound();
@@ -2074,7 +2107,16 @@ wordElement?.addEventListener("click", () => correctAnswer("word"));
 // ================================================================
 
 function isInteractiveTarget(target) {
-  return !!target?.closest("button, a, input, select, textarea");
+  if (!target) return false;
+
+  // The large word is technically a button, but we WANT
+  // swiping to work on it.
+  if (target.closest("#word")) {
+    return false;
+  }
+
+  // Ignore swipes started on every other interactive control.
+  return !!target.closest("button, a, input, select, textarea");
 }
 
 gameScreen?.addEventListener(
