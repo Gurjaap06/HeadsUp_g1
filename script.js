@@ -1752,7 +1752,7 @@ function startCountdown() {
     game.countdownTimer = null;
 
     beginActiveRound();
-  }, 700);
+  }, 1000);
 }
 
 function beginActiveRound() {
