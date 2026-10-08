@@ -1,4 +1,4 @@
-const CACHE_NAME = "punjabi-charades-v14-home-scorecard";
+const CACHE_NAME = "punjabi-charades-v15-icons";
 
 const FILES_TO_CACHE = [
   "./",
@@ -6,6 +6,9 @@ const FILES_TO_CACHE = [
   "./style.css",
   "./script.js",
   "./manifest.json",
+  "./icons/icon-192.png",
+  "./icons/icon-512.png",
+  "./icons/apple-touch-icon.png",
 ];
 
 self.addEventListener("install", (event) => {
