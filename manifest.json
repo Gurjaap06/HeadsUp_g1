@@ -1,7 +1,7 @@
 {
-  "name": "Punjabi Charades",
+  "name": "Indian Charades",
   "short_name": "Charades",
-  "description": "A fast and fun charades game you can play anywhere.",
+  "description": "A fast and fun Indian charades game you can play anywhere.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#09090f",

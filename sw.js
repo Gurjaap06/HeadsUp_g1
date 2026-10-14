@@ -1,4 +1,4 @@
-const CACHE_NAME = "punjabi-charades-v15-icons";
+const CACHE_NAME = "indian-charades-v16-decks";
 
 const FILES_TO_CACHE = [
   "./",
@@ -9,6 +9,7 @@ const FILES_TO_CACHE = [
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/apple-touch-icon.png",
+  "./decks.js"
 ];
 
 self.addEventListener("install", (event) => {
